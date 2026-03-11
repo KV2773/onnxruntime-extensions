@@ -7,8 +7,8 @@
 namespace std {
 
 template <class T>
-size_t hash<std::vector<T>>::operator()(const vector<T>& __vector) const noexcept {
-  return util::Hash(reinterpret_cast<const char*>(__vector.data()), __vector.size() * sizeof(T));
+size_t hash<std::vector<T>>::operator()(const vector<T>& __vec) const noexcept {
+  return util::Hash(reinterpret_cast<const char*>(__vec.data()), __vec.size() * sizeof(T));
 }
 
 template struct hash<std::vector<std::string>>;
