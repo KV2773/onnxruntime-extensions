@@ -1,0 +1,12 @@
+--- a/src/util.h	2026-03-06 09:30:45.828055120 -0600
++++ b/src/util.h	2026-03-06 09:29:44.677803817 -0600
+@@ -36,7 +36,9 @@
+ #include <pthread.h>
+ #endif
+ 
+ #if !defined(__APPLE__) && !defined(_WIN32)
++#if !defined(_AIX)
+ #include <endian.h>
++#endif
+ #if BYTE_ORDER == __BIG_ENDIAN
+ #define IS_BIG_ENDIAN

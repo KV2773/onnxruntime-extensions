@@ -1,0 +1,39 @@
+--- a/modules/core/src/system.cpp	2026-03-06 10:20:31.910853445 -0600
++++ b/modules/core/src/system.cpp	2026-03-06 10:20:31.900850598 -0600
+@@ -128,12 +128,12 @@
+ #include <cstdlib>        // std::abort
+ #endif
+ 
+-#if defined __ANDROID__ || defined __unix__ || defined __FreeBSD__ || defined __OpenBSD__ || defined __HAIKU__ || defined __Fuchsia__
++#if defined __ANDROID__ || defined _AIX || defined __unix__ || defined __FreeBSD__ || defined __OpenBSD__ || defined __HAIKU__ || defined __Fuchsia__
+ #  include <unistd.h>
+ #  include <fcntl.h>
+-#if defined __QNXNTO__
++#if defined __QNXNTO__ 
+ #  include <sys/elf.h>
+-#else
++#elif !defined (_AIX)
+ #  include <elf.h>
+ #endif
+ #if defined __ANDROID__ || defined __linux__
+@@ -146,8 +146,10 @@
+ #endif
+ 
+ 
+-#if (defined __ppc64__ || defined __PPC64__) && defined __unix__
++#if (defined __ppc64__ || defined __PPC64__) && defined __unix__ 
++#if !defined _AIX
+ # include "sys/auxv.h"
++#endif
+ # ifndef AT_HWCAP2
+ #   define AT_HWCAP2 26
+ # endif
+@@ -616,7 +618,7 @@
+         have[CV_CPU_MSA] = true;
+     #endif
+ 
+-    #if (defined __ppc64__ || defined __PPC64__) && defined __unix__
++    #if (defined __ppc64__ || defined __PPC64__) && defined __unix__ && !defined _AIX
+         unsigned int hwcap = getauxval(AT_HWCAP);
+         if (hwcap & PPC_FEATURE_HAS_VSX) {
+             hwcap = getauxval(AT_HWCAP2);

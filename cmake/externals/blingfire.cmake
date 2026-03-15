@@ -2,6 +2,7 @@ FetchContent_Declare(
   Blingfire
   GIT_REPOSITORY https://github.com/microsoft/BlingFire.git
   GIT_TAG 0831265c1aca95ca02eca5bf1155e4251e545328
+  PATCH_COMMAND git checkout . && /opt/freeware/bin/patch -p1 --binary < ${CMAKE_CURRENT_SOURCE_DIR}/cmake/externals/blingfire_cmake.patch
   EXCLUDE_FROM_ALL)
 
 FetchContent_MakeAvailable(Blingfire)

@@ -1,0 +1,15 @@
+--- a/modules/core/src/rand.cpp	2026-03-06 09:28:24.672558982 -0600
++++ b/modules/core/src/rand.cpp	2026-03-06 09:34:55.422320400 -0600
+@@ -48,6 +48,12 @@
+ 
+ #include "precomp.hpp"
+ 
++#ifdef _AIX
++#ifdef hz
++#undef hz
++#endif
++#endif
++
+ namespace cv
+ {
+ 
