@@ -69,6 +69,12 @@ else()
   target_compile_options(${PNG_LIBRARY} PRIVATE -Wno-deprecated-non-prototype)
 endif()
 
+# Disable PowerPC VSX optimizations on AIX since the embedded libpng
+# from dlib doesn't include the powerpc/*.c files needed for VSX support
+if(CMAKE_SYSTEM_NAME STREQUAL "AIX")
+  target_compile_definitions(${PNG_LIBRARY} PRIVATE -DPNG_POWERPC_VSX_OPT=0)
+endif()
+
 set_target_properties(${PNG_LIBRARY}
   PROPERTIES
       POSITION_INDEPENDENT_CODE ON

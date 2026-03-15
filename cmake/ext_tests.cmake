@@ -168,7 +168,7 @@ if (OCOS_BUILD_SHARED_LIB)
     message(WARNING "The prebuilt onnxruntime library was not found, extensions_test will be skipped.")
   else()
     block()
-      if(NOT IOS)
+      if(NOT IOS AND NOT CMAKE_SYSTEM_NAME STREQUAL "AIX")
         set(use_extensions_shared_library 1)
       endif()
 

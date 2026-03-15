@@ -132,6 +132,21 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
   add_definitions(-DPNG_ARM_NEON_OPT=0)
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "AIX")
+  # error   Undefined symbol: .png_init_filter_functions_vsx
+  # workaround to disable PowerPC VSX optimizations on AIX
+  # OpenCV's embedded libpng doesn't include powerpc/*.c files needed for VSX
+  add_definitions(-DPNG_POWERPC_VSX_OPT=0)
+  
+  # Disable symbol visibility attributes on AIX
+  # AIX linker doesn't support visibility on imported symbols from shared libraries
+  set(ENABLE_CXX11 OFF CACHE INTERNAL "")
+  set(OPENCV_ENABLE_NONFREE OFF CACHE INTERNAL "")
+  # Prevent OpenCV from adding -fvisibility flags
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=default")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=default")
+endif()
+
 if (MSVC AND CMAKE_GENERATOR_PLATFORM)
   string(TOLOWER ${CMAKE_GENERATOR_PLATFORM} _GEN_PLATFORM)
   if (${_GEN_PLATFORM} MATCHES "arm|arm64")
@@ -149,7 +164,7 @@ FetchContent_Declare(
     -DBUILD_TESTS:BOOL=FALSE
     -DBUILD_SHARED_LIBS:BOOL=FALSE
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/opencv
-    PATCH_COMMAND git checkout . && git apply --whitespace=fix --ignore-space-change --ignore-whitespace ${CMAKE_CURRENT_SOURCE_DIR}/cmake/externals/opencv-no-rtti.patch
+    PATCH_COMMAND git checkout . && /opt/freeware/bin/patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/cmake/externals/opencv-no-rtti.patch && /opt/freeware/bin/patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/cmake/externals/rand_aix.patch && /opt/freeware/bin/patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/cmake/externals/system_aix.patch
     EXCLUDE_FROM_ALL
 )
 
