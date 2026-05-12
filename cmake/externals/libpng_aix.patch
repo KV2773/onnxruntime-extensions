@@ -1,0 +1,33 @@
+--- CMakeLists_orig.txt	2026-05-08 06:30:49.958067884 -0500
++++ CMakeLists.txt	2026-05-08 06:32:23.766479231 -0500
+@@ -390,7 +390,7 @@
+ endif(PNG_HARDWARE_OPTIMIZATIONS)
+
+ option(ld-version-script "Enable linker version script" ON)
+-if(ld-version-script AND NOT (ANDROID OR APPLE))
++if(ld-version-script AND NOT (ANDROID OR APPLE OR AIX))
+   # Check if LD supports linker scripts.
+   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/conftest.map" "
+ VERS_1 { global: sym1; local: *; };
+@@ -672,7 +672,7 @@
+                                    DEBUG_POSTFIX "${PNG_DEBUG_POSTFIX}"
+                                    VERSION "${PNGLIB_SHARED_VERSION}"
+                                    SOVERSION "${PNGLIB_ABI_VERSION}")
+-  if(UNIX AND AWK)
++  if(UNIX AND AWK AND NOT AIX)
+     if(HAVE_LD_VERSION_SCRIPT)
+       set_target_properties(png_shared
+                             PROPERTIES LINK_FLAGS "-Wl,--version-script='${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
++@@ -680,6 +680,12 @@
++       set_target_properties(png_shared
++                             PROPERTIES LINK_FLAGS "-Wl,-M -Wl,'${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
++     endif()
+++  elseif(CMAKE_SYSTEM_NAME MATCHES "AIX")
+++    # AIX uses export files instead of version scripts
+++    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/libpng.exp")
+++      set_target_properties(png_shared
+++                            PROPERTIES LINK_FLAGS "-Wl,-bE:${CMAKE_CURRENT_SOURCE_DIR}/libpng.exp")
+++    endif()
++   endif()
++
++   if(PNG_SHARED)

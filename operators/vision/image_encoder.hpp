@@ -2,12 +2,9 @@
 // Licensed under the MIT License.
 
 #include "zlib.h"
-#if ZLIB_VERNUM != 0x12b0
-// the following is a trick to show the invalid version number for the diagnosis.
-#define STR_VERSION(x) STR_NUM(x)
-#define STR_NUM(x) #x
-#pragma message "Invalid zlib version:  " STR_VERSION(ZLIB_VERNUM)
-#error "stopped"
+// Relaxed zlib version check for AIX compatibility
+#if ZLIB_VERNUM < 0x12b0
+#error "zlib version must be at least 1.2.11.0"
 #endif
 
 #include "png.h"

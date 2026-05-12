@@ -19,6 +19,9 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc64|ppc64le|powerpc")
     libpng_external
     GIT_REPOSITORY https://github.com/pnggroup/libpng.git
     GIT_TAG        v1.6.58   # pinned release tag
+    PATCH_COMMAND git checkout . &&
+                  ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/cmake/externals/libpng_aix.exp <SOURCE_DIR>/libpng.exp &&
+                  git apply --ignore-space-change --ignore-whitespace ${PROJECT_SOURCE_DIR}/cmake/externals/libpng_aix.patch
   )
 
   FetchContent_MakeAvailable(libpng_external)
