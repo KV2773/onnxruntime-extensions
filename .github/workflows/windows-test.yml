@@ -1,0 +1,24 @@
+name: Free Windows Build Test
+
+on:
+  push:
+    branches: [ main, aix-platform ]
+  pull_request:
+
+jobs:
+  test-patch:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.25.x'
+
+    - name: Run Build (Validates Patches)
+      run: |
+        mkdir out
+        cd out
+        cmake .. -Dfetch_content_only=ON
